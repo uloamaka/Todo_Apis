@@ -1,0 +1,32 @@
+{
+  "name": "todo_apis",
+  "version": "1.0.0",
+  "description": "A complete Todo Apis hosted with cloudflare stacks",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uloamaka/Todo_Apis.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/uloamaka/Todo_Apis/issues"
+  },
+  "homepage": "https://github.com/uloamaka/Todo_Apis#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "helmet": "^7.1.0",
+    "mongoose": "^8.0.2",
+    "morgan": "^1.10.0",
+    "zod": "^3.22.4"
+  }
+}
