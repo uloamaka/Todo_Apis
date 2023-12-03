@@ -22,7 +22,7 @@ require("dotenv").config();
 const connectDB = require("./db/connect");
 
 const v1Router = require("./routes/index");
-app.use("/", v1Router);
+app.use("/api/V1", v1Router);
 
 // const options = {
 //   definition: {
