@@ -1,6 +1,8 @@
 const router = require("express").Router();
 
+const authRouter = require("./auth.router");
 const taskRouter = require("./task.router");
+const swaggerRouter = require("./swagger.router");
 
 router.get("/", (req, res) => {
   res.json({
@@ -9,6 +11,8 @@ router.get("/", (req, res) => {
   });
 });
 
+router.use("/auth", authRouter);
 router.use("/todo", taskRouter);
+router.use("/", swaggerRouter);
 
 module.exports = router;

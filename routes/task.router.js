@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const { userAuth } = require("../middlewares/auth.middleware");
 const {
   createTodoTask,
   getTodoTaskById,
@@ -11,19 +11,18 @@ const {
   deleteTodoTaskById,
 } = require("../controllers/task.controller");
 
-router.post("/create", createTodoTask);
-router.get("/:task_id", getTodoTaskById);
-router.get("/", getAllTodoTask);
-router.patch(
-  "/:task_id/edit_content",
-  updateTaskContentById,
-);router.patch(
-  "/:task_id/edit_category",
-  updateTaskCategoryById,
-);router.patch(
-  "/:task_id/edit_status",
-  updateTaskStatusById
-);
-router.delete("/:task_id/delete", deleteTodoTaskById);
+router.post("/create", userAuth, createTodoTask);
+
+router.get("/:task_id", userAuth, getTodoTaskById);
+
+router.get("/", userAuth, getAllTodoTask);
+
+router.patch("/:task_id/edit_content", userAuth, updateTaskContentById);
+
+router.patch("/:task_id/edit_category", userAuth, updateTaskCategoryById);
+
+router.patch("/:task_id/edit_status", userAuth, updateTaskStatusById);
+
+router.delete("/:task_id/delete", userAuth, deleteTodoTaskById);
 
 module.exports = router;
