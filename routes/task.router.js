@@ -10,12 +10,14 @@ const {
   updateTaskStatusById,
   deleteTodoTaskById,
 } = require("../controllers/task.controller");
+const Task = require("../model/TaskModel")
+const paginatedResults = require("../middlewares/pagination.middleware");
 
 router.post("/create", userAuth, createTodoTask);
 
 router.get("/:task_id", userAuth, getTodoTaskById);
 
-router.get("/", userAuth, getAllTodoTask);
+router.get("/", userAuth, paginatedResults(Task), getAllTodoTask);
 
 router.patch("/:task_id/edit_content", userAuth, updateTaskContentById);
 
