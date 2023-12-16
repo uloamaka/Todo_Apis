@@ -5,9 +5,9 @@
     "title": "Todo_Apis",
     "description": "Complete Documentation for Todo_Apis v1.0.0"
   },
-  "host": "Todo_Apis.onrender.com",
+  "host": "localhost:5000",
   "basePath": "/api/v1",
-  "schemes": ["https", "http"],
+  "schemes": ["http", "https"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "tags": [
@@ -21,7 +21,7 @@
     }
   ],
   "paths": {
-    "/register": {
+    "/auth/register": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Register a new user",
@@ -33,10 +33,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "username": {
-                  "type": "string",
-                  "example": "john_doe"
-                },
                 "email": {
                   "type": "string",
                   "format": "email",
@@ -44,7 +40,7 @@
                 },
                 "password": {
                   "type": "string",
-                  "example": "password123"
+                  "example": "PassWord123$$"
                 }
               },
               "required": ["username", "email", "password"]
@@ -64,7 +60,7 @@
         }
       }
     },
-    "/login": {
+    "/auth/login": {
       "post": {
         "tags": ["Authentication"],
         "summary": "User login",
@@ -76,14 +72,14 @@
             "schema": {
               "type": "object",
               "properties": {
-                "email": {
+                    "email": {
                   "type": "string",
                   "format": "email",
                   "example": "john@example.com"
                 },
                 "password": {
                   "type": "string",
-                  "example": "password123"
+                  "example": "PassWord123$$"
                 }
               },
               "required": ["email", "password"]
@@ -103,7 +99,7 @@
         }
       }
     },
-    "/forget-password": {
+    "/auth/forget-password": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Initiate password reset process",
@@ -138,7 +134,7 @@
         }
       }
     },
-    "/reset-password/{userId}/{resetToken}": {
+    "/auth/reset-password/{userId}/{resetToken}": {
       "post": {
         "tags": ["Authentication"],
         "summary": "Reset user password",
@@ -184,7 +180,7 @@
         }
       }
     },
-    "/create": {
+    "/todo/create": {
       "post": {
         "tags": ["Todo"],
         "description": "Endpoint to create a new Todo task.",
@@ -229,7 +225,7 @@
         }
       }
     },
-    "/{task_id}": {
+    "/todo/{task_id}": {
       "get": {
         "tags": ["Todo"],
         "description": "Fetch a Todo task by task id",
@@ -257,7 +253,7 @@
         }
       }
     },
-    "/": {
+    "/todo": {
       "get": {
         "tags": ["Todo"],
         "description": "Fetch all Todo tasks of a user",
@@ -277,7 +273,7 @@
         }
       }
     },
-    "/{task_id}/edit_content": {
+    "/todo/{task_id}/edit_content": {
       "patch": {
         "tags": ["Todo"],
         "description": "Update a Todo task content by task id",
@@ -305,7 +301,7 @@
         }
       }
     },
-    "/{task_id}/edit_category": {
+    "/todo/{task_id}/edit_category": {
       "patch": {
         "tags": ["Todo"],
         "description": "Update a Todo task category by task id",
@@ -333,7 +329,7 @@
         }
       }
     },
-    "/{task_id}/edit_status": {
+    "/todo/{task_id}/edit_status": {
       "patch": {
         "tags": ["Todo"],
         "description": "Update a Todo task status by task id",
@@ -361,7 +357,7 @@
         }
       }
     },
-    "/{task_id}/delete": {
+    "/todo/{task_id}/delete": {
       "delete": {
         "tags": ["Todo"],
         "description": "Delete a Todo task by task id",

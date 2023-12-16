@@ -1,5 +1,4 @@
 const Task = require("../model/TaskModel");
-const { z } = require("zod");
 const { ObjectId } = require("mongodb");
 const {
   ResourceNotFound,
@@ -11,6 +10,7 @@ const {
   INVALID_REQUEST_PARAMETERS,
   INSUFFICIENT_PERMISSIONS,
 } = require("../errors/httpErrorCodes");
+const paginateResults = require("../middlewares/pagination.middleware");
 
 const createTodoTask = async (req, res) => {
   const userId = req.user.id;
@@ -54,17 +54,16 @@ const getTodoTaskById = async (req, res) => {
 };
 
 const getAllTodoTask = async (req, res) => {
-  const userId = req.user.id;
-  const tasks = await Task.find({ user_id: userId });
-
-  if (!tasks || tasks.length === 0) {
-    throw new ResourceNotFound(
-      "No tasks found for the user.",
-      RESOURCE_NOT_FOUND
-    );
-  }
-
-  return res.ok(tasks);
+  paginateResults(Task)(req, res, async () => {
+    const tasks = res.paginatedResults;
+    if (!tasks || tasks.length === 0) {
+      throw new ResourceNotFound(
+        "No tasks found for the user.",
+        RESOURCE_NOT_FOUND
+      );
+    }
+    return res.ok(tasks);
+  });
 };
 
 const updateTaskContentById = async (req, res) => {
