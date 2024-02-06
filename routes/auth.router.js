@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const registerUser = require("../controllers/auth.controller");
+const registerUser = require("../api/auth/controller");
 
 router.post("/register", registerUser.registerUser);
 

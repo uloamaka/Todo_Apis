@@ -1,32 +1,29 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
-const hbs = require("handlebars");
-const fs = require("fs");
 const { z } = require("zod");
 const {
   emailSchema,
   passwordSchema,
-} = require("../validators/formRegister.validator");
+} = require("../../validators/formRegister.validator");
 const jwtSecret = process.env.jwtSecret;
 const clientUrl = process.env.clientUrl; // to connect to frontend
-const User = require("../model/userModel");
-const { sendMail } = require("../utils");
+const User = require("../../model/userModel");
+const { sendMail } = require("../../utils");
 
 const {
   ResourceNotFound,
   BadRequest,
   Conflict,
   Unauthorized,
-} = require("../utils/httpErrors");
+} = require("../../utils/httpErrors");
 const {
   RESOURCE_NOT_FOUND,
   INVALID_REQUEST_PARAMETERS,
   EXISTING_USER_EMAIL,
   MALFORMED_TOKEN,
   EXPIRED_TOKEN,
-} = require("../errors/httpErrorCodes");
-const { resetPassMail, confirmReset } = require("../utils/email-template");
+} = require("../../errors/httpErrorCodes");
+const { resetPassMail, confirmReset } = require("../../utils/email-template");
 
 const registerUser = async (req, res, next) => {
   const userSchema = z.object({
