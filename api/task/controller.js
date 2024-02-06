@@ -1,16 +1,16 @@
-const Task = require("../model/TaskModel");
+const Task = require("../../model/TaskModel");
 const { ObjectId } = require("mongodb");
 const {
   ResourceNotFound,
   BadRequest,
   Forbidden,
-} = require("../utils/httpErrors");
+} = require("../../utils/httpErrors");
 const {
   RESOURCE_NOT_FOUND,
   INVALID_REQUEST_PARAMETERS,
   INSUFFICIENT_PERMISSIONS,
-} = require("../errors/httpErrorCodes");
-const paginateResults = require("../middlewares/pagination.middleware");
+} = require("../../errors/httpErrorCodes");
+const paginateResults = require("../../middlewares/pagination.middleware");
 
 const createTodoTask = async (req, res) => {
   const userId = req.user.id;

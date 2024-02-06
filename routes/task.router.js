@@ -9,7 +9,7 @@ const {
   updateTaskCategoryById,
   updateTaskStatusById,
   deleteTodoTaskById,
-} = require("../controllers/task.controller");
+} = require("../api/task/controller");
 const Task = require("../model/TaskModel")
 const paginatedResults = require("../middlewares/pagination.middleware");
 
