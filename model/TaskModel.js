@@ -28,18 +28,9 @@ const taskSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      immutable: true,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
-    required: true,
+    required: true, timestamps: true
   }
 );
 taskSchema.index({ category: 1, status: 1 });

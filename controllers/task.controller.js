@@ -4,7 +4,7 @@ const {
   ResourceNotFound,
   BadRequest,
   Forbidden,
-} = require("../errors/httpErrors");
+} = require("../utils/httpErrors");
 const {
   RESOURCE_NOT_FOUND,
   INVALID_REQUEST_PARAMETERS,
