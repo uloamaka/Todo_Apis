@@ -22,7 +22,7 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 
 require("dotenv").config();
-const connectDB = require("./db/connect");
+const connectDB = require("./service/database");
 
 const v1Router = require("./routes/index");
 app.use("/api/v1", v1Router);

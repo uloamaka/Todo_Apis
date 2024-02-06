@@ -13,13 +13,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Basic",
     },
-    CreatedAt: {
-      type: Date,
-      default: Date.now,
-      immutable: true,
-    },
   },
-  { required: true }
+  { required: true, timestamps: true }
 );
 
 const User = mongoose.model("User", userSchema);
