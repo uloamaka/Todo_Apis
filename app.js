@@ -11,7 +11,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const responseUtilities = require("./shared/responceMiddlewares");
 const { errorLogger, errorHandler } = require("./shared/errorMiddlewares");
-const { UNKNOWN_ENDPOINT } = require("./errors/httpErrorCodes");
+const { UNKNOWN_ENDPOINT } = require("./utils/httpErrorCodes");
 
 app.use(responseUtilities);
 app.use(express.json());
@@ -53,7 +53,7 @@ app.use("/api/v1", v1Router);
 
 // app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
-http: app.use(errorLogger);
+app.use(errorLogger);
 app.use(errorHandler);
 
 app.use((req, res) => {

@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const { Unauthorized } = require("../utils/httpErrors");
-const { USER_NOT_VERIFIED } = require("../errors/httpErrorCodes");
+const { USER_NOT_VERIFIED } = require("../utils/httpErrorCodes");
 const jwtSecret = process.env.jwtSecret;
 
 const userAuth = (req, res, next) => {
