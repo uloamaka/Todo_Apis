@@ -9,7 +9,7 @@ const {
   RESOURCE_NOT_FOUND,
   INVALID_REQUEST_PARAMETERS,
   INSUFFICIENT_PERMISSIONS,
-} = require("../../errors/httpErrorCodes");
+} = require("../../utils/httpErrorCodes");
 const paginateResults = require("../../middlewares/pagination.middleware");
 
 const createTodoTask = async (req, res) => {
