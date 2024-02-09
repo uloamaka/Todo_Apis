@@ -1,29 +1,10 @@
-const Task = require("../../model/TaskModel");
-const { ObjectId } = require("mongodb");
-const {
-  ResourceNotFound,
-  BadRequest,
-  Forbidden,
-} = require("../../utils/httpErrors");
-const {
-  RESOURCE_NOT_FOUND,
-  INVALID_REQUEST_PARAMETERS,
-  INSUFFICIENT_PERMISSIONS,
-} = require("../../utils/httpErrorCodes");
-const paginateResults = require("../../middlewares/pagination.middleware");
+const Service = require("./service");
 
+this.service = new Service();
 const createTodoTask = async (req, res) => {
-  const userId = req.user.id;
-  const { category, content, status, due_date } = req.body;
+  const user_id = req.user.id;
 
-  const task = new Task({
-    category,
-    content,
-    status,
-    due_date,
-    user_id: userId,
-  });
-  const savedTask = await task.save();
+  const { savedTask } = this.service.createTask(req.body, user_id);
   return res.created({
     message: savedTask,
     task_id: `${savedTask._id}`,
@@ -31,26 +12,13 @@ const createTodoTask = async (req, res) => {
 };
 
 const getTodoTaskById = async (req, res) => {
-  const userId = req.user.id;
-  const { task_id } = req.params;
-  if (!ObjectId.isValid(task_id)) {
-    throw new BadRequest(
-      "Invalid Tasks_id format.",
-      INVALID_REQUEST_PARAMETERS
-    );
-  }
-  const task = await Task.findById(task_id);
-  if (!task) {
-    throw new ResourceNotFound("Resource not found.", RESOURCE_NOT_FOUND);
-  }
-  if (task.user_id.toString() !== userId.toString()) {
-    throw new Forbidden(
-      "You do not have permission to access this task.",
-      INSUFFICIENT_PERMISSIONS
-    );
-  }
+  const payload = {
+    task_id: req.params.task_id,
+    user_id: req.user.id,
+  };
+  const task = await this.service.getTask(payload);
 
-  return res.ok(task);
+  return res.ok({ message: task });
 };
 
 const getAllTodoTask = async (req, res) => {
@@ -67,118 +35,50 @@ const getAllTodoTask = async (req, res) => {
 };
 
 const updateTaskContentById = async (req, res) => {
-  const userId = req.user.id;
-  const { task_id } = req.params;
-  const { content } = req.body;
-  if (!ObjectId.isValid(task_id)) {
-    throw new BadRequest("Invalid task_id format.", INVALID_REQUEST_PARAMETERS);
-  }
-  if (!content) {
-    throw new BadRequest("Invalid request params", INVALID_REQUEST_PARAMETERS);
-  }
-  const task = await Task.findById(task_id);
-  if (!task) {
-    throw new ResourceNotFound("Resource not found.", RESOURCE_NOT_FOUND);
-  }
-  if (task.user_id.toString() !== userId.toString()) {
-    throw new Forbidden(
-      "You do not have permission to access this task.",
-      INSUFFICIENT_PERMISSIONS
-    );
-  }
-  const updatedTaskField = await Task.findByIdAndUpdate(
-    task_id,
-    { content, updatedAt: Date.now() },
+  const payload = {
+    content: req.body.content,
+    task_id: req.params.task_id,
+    user_id: req.user.id,
+  };
 
-    {
-      new: true,
-    }
-  );
-  if (!updatedTaskField) {
-    throw new ResourceNotFound("Task not found.", RESOURCE_NOT_FOUND);
-  }
+  const updatedTaskField = await this.service.updateContent(payload);
 
   return res.ok(updatedTaskField);
 };
 
 const updateTaskCategoryById = async (req, res) => {
-  const userId = req.user.id;
-  const { task_id } = req.params;
-  const { category } = req.body;
-  if (!ObjectId.isValid(task_id)) {
-    throw new BadRequest("Invalid task_id format.", INVALID_REQUEST_PARAMETERS);
-  }
-  if (!category) {
-    throw new BadRequest("Invalid request params", INVALID_REQUEST_PARAMETERS);
-  }
-  const task = await Task.findById(task_id);
-  if (!task) {
-    throw new ResourceNotFound("Resource not found.", RESOURCE_NOT_FOUND);
-  }
-  if (task.user_id.toString() !== userId.toString()) {
-    throw new Forbidden(
-      "You do not have permission to access this task.",
-      INSUFFICIENT_PERMISSIONS
-    );
-  }
-  const updatedTaskField = await Task.findByIdAndUpdate(
-    task_id,
-    { category, updatedAt: Date.now() },
-    {
-      new: true,
-    }
-  );
-  if (!updatedTaskField) {
-    throw new ResourceNotFound("Task not found.", RESOURCE_NOT_FOUND);
-  }
+  const payload = {
+    category: req.body.category,
+    task_id: req.params.task_id,
+    user_id: req.user.id,
+  };
+
+  const updatedTaskField = await this.service.updateCat(payload);
 
   return res.ok(updatedTaskField);
 };
 
 const updateTaskStatusById = async (req, res) => {
-  const userId = req.user.id;
-  const { task_id } = req.params;
-  const { status } = req.body;
-  if (!ObjectId.isValid(task_id)) {
-    throw new BadRequest("Invalid task_id format.", INVALID_REQUEST_PARAMETERS);
-  }
-  if (!status) {
-    throw new BadRequest("Invalid request params", INVALID_REQUEST_PARAMETERS);
-  }
-  const task = await Task.findById(task_id);
-  if (!task) {
-    throw new ResourceNotFound("Resource not found.", RESOURCE_NOT_FOUND);
-  }
-  if (task.user_id.toString() !== userId.toString()) {
-    throw new Forbidden(
-      "You do not have permission to access this task.",
-      INSUFFICIENT_PERMISSIONS
-    );
-  }
-  const updatedTaskField = await Task.findByIdAndUpdate(
-    task_id,
-    { status, updatedAt: Date.now() },
+  const payload = {
+    status: req.body.status,
+    task_id: req.params.task_id,
+    user_id: req.user.id,
+  };
 
-    {
-      new: true,
-    }
-  );
-  if (!updatedTaskField) {
-    throw new ResourceNotFound("Task not found.", RESOURCE_NOT_FOUND);
-  }
+  const updatedTaskField = await this.service.updateStatus(payload);
 
   return res.ok(updatedTaskField);
 };
 
 const deleteTodoTaskById = async (req, res) => {
-  const userId = req.user.id;
-  const { task_id } = req.params;
-  if (!ObjectId.isValid(task_id)) {
-    throw new BadRequest("Invalid user_id format.", INVALID_REQUEST_PARAMETERS);
-  }
-  const task = await Task.findOneAndDelete({ _id: task_id, user_id: userId });
-  if (!task)
-    throw new ResourceNotFound("Resource not found.", RESOURCE_NOT_FOUND);
+  const payload = {
+    status: req.body.status,
+    task_id: req.params.task_id,
+    user_id: req.user.id,
+  };
+
+  await this.service.deleteTask(payload);
+
   res.noContent();
 };
 
