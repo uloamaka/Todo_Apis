@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const jwt = require("../../service/jwt");
 const JWT_SECRET = process.env.jwtSecret;
 const clientUrl = process.env.clientUrl; // to connect to frontend
 const User = require("../../model/userModel");
@@ -21,31 +21,24 @@ const {
 const { resetPassMail, confirmReset } = require("../../utils/email-template");
 
 class Service {
-  async register(validUser, res) {
-    const { email, password } = validUser;
+  async register(payload, res) {
+    const { email, password } = payload;
     const userExist = await User.findOne({ email });
     if (userExist) {
       throw new Conflict("Email already exists", EXISTING_USER_EMAIL);
     }
-
-    bcrypt.hash(password, 10, async function (err, hash) {
-      if (err) {
-        throw new Unauthorized("Error hashing password", MALFORMED_TOKEN);
-      }
-      const user = await User.create({
-        email,
-        password: hash,
-      });
-      const maxAge = 1 * 60 * 60;
-      const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
-        expiresIn: maxAge, // 1hrs in sec
-      });
-      return token;
+    const hash = bcrypt.hashSync(password, 10);
+    const user = await User.create({
+      email,
+      password: hash,
     });
+
+    const data = await jwt.generateToken(user.id);
+    return { data };
   }
 
-  async login(validUser) {
-    const { email, password } = validUser;
+  async login(payload) {
+    const { email, password } = payload;
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -54,18 +47,12 @@ class Service {
         RESOURCE_NOT_FOUND
       );
     }
-    bcrypt.compare(password, user.password, (err, result) => {
-      if (err) {
-        throw new Error("Error comparing passwords");
-      }
-      if (result) {
-        const maxAge = 3 * 60 * 60;
-        const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
-          expiresIn: maxAge, // 3hrs in seconds
-        });
-        return token;
-      }
-    });
+    const match = bcrypt.compare(password, user.password);
+
+    if (!match) throw new BadRequest("Error comparing passwords");
+
+    const data = await jwt.generateToken(user.id);
+    return { data };
   }
 
   async sendLink(payload) {
@@ -88,9 +75,9 @@ class Service {
     });
   }
 
-  async resetPass(validatedData, req_params) {
+  async resetPass(payload, req_params) {
     const { resetToken, userId } = req_params;
-    const { newPassword } = validatedData;
+    const { newPassword } = payload;
     const user = await User.findOne({ _id: userId });
     if (!user) {
       throw new ResourceNotFound("User does not exist", RESOURCE_NOT_FOUND);
@@ -127,8 +114,5 @@ class Service {
     });
   }
 }
-
-//make a middleware for userExist
-
 
 module.exports = Service;
