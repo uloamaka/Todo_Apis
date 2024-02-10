@@ -1,8 +1,6 @@
 const Task = require("../../model/TaskModel");
 const { ObjectId } = require("mongodb");
 
-const paginateResults = require("../../middlewares/pagination.middleware");
-
 const {
   ResourceNotFound,
   BadRequest,
@@ -17,6 +15,7 @@ const {
 class Service {
   async createTask(payload, user_id) {
     const { category, content, status, due_date } = payload;
+    console.log(user_id);
     const task = new Task({
       category,
       content,
@@ -24,8 +23,8 @@ class Service {
       due_date,
       user_id,
     });
-    const savedTask = await task.save();
-    return savedTask;
+    const data = await task.save();
+    return { data };
   }
 
   async getTask(payload) {
@@ -46,11 +45,12 @@ class Service {
         INSUFFICIENT_PERMISSIONS
       );
     }
-    return task;
+    return { task };
   }
 
   async updateContent(payload) {
     const { task_id, user_id, content } = payload;
+
     if (!ObjectId.isValid(task_id)) {
       throw new BadRequest(
         "Invalid task_id format.",
@@ -82,7 +82,7 @@ class Service {
         new: true,
       }
     );
-    return updatedTaskField;
+    return { updatedTaskField };
   }
 
   async updateCat(payload) {
@@ -119,6 +119,7 @@ class Service {
     if (!updatedTaskField) {
       throw new ResourceNotFound("Task not found.", RESOURCE_NOT_FOUND);
     }
+    return { updatedTaskField };
   }
 
   async updateStatus(payload) {
@@ -155,6 +156,7 @@ class Service {
     if (!updatedTaskField) {
       throw new ResourceNotFound("Task not found.", RESOURCE_NOT_FOUND);
     }
+    return { updatedTaskField };
   }
 
   async deleteTask(payload) {
