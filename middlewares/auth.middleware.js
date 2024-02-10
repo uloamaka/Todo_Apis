@@ -4,18 +4,22 @@ const { Unauthorized } = require("../utils/httpErrors");
 
 const { USER_NOT_VERIFIED } = require("../utils/httpErrorCodes");
 
-const userAuth = (req, res, next) => {
+const userAuth = async (req, res, next) => {
   const token = req.cookies.jwt;
   if (token) {
-    const verified = jwt.verifyAccessToken(token);
-
-    if (!verified) {
-      return next(new Unauthorized(err.message, USER_NOT_VERIFIED));
-    } else {
+    const data = await jwt.verifyAccessToken(token);
+    if (data !== undefined && data !== null) {
       req.user = {
-        id: verified.id,
+        id: data.decodedToken.id,
       };
       next();
+    } else {
+      return next(
+        new Unauthorized(
+          "Not authorized, token not available",
+          USER_NOT_VERIFIED
+        )
+      );
     }
   } else {
     return next(

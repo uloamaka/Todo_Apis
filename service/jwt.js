@@ -16,9 +16,8 @@ class JWTService {
     const decodedToken = jwt.verify(token, JWT_SECRET);
     if (!decodedToken)
       throw new BadRequestException("Token is invalid or expired");
-    return decodedToken;
+    return { decodedToken };
   }
 }
-
 
 module.exports = new JWTService();

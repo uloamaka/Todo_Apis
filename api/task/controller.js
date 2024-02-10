@@ -1,13 +1,15 @@
+const paginateResults = require("../../middlewares/pagination.middleware");
+const Task = require("../../model/TaskModel");
+
 const Service = require("./service");
 
 this.service = new Service();
 const createTodoTask = async (req, res) => {
   const user_id = req.user.id;
+  let { data } = await this.service.createTask(req.body, user_id);
 
-  const { savedTask } = this.service.createTask(req.body, user_id);
   return res.created({
-    message: savedTask,
-    task_id: `${savedTask._id}`,
+    data,
   });
 };
 
@@ -18,7 +20,7 @@ const getTodoTaskById = async (req, res) => {
   };
   const task = await this.service.getTask(payload);
 
-  return res.ok({ message: task });
+  return res.ok(task);
 };
 
 const getAllTodoTask = async (req, res) => {
@@ -40,10 +42,10 @@ const updateTaskContentById = async (req, res) => {
     task_id: req.params.task_id,
     user_id: req.user.id,
   };
+  
+  const data = await this.service.updateContent(payload);
 
-  const updatedTaskField = await this.service.updateContent(payload);
-
-  return res.ok(updatedTaskField);
+  return res.ok(data.updatedTaskField);
 };
 
 const updateTaskCategoryById = async (req, res) => {
@@ -53,9 +55,9 @@ const updateTaskCategoryById = async (req, res) => {
     user_id: req.user.id,
   };
 
-  const updatedTaskField = await this.service.updateCat(payload);
+  const data = await this.service.updateCat(payload);
 
-  return res.ok(updatedTaskField);
+  return res.ok(data.updatedTaskField);
 };
 
 const updateTaskStatusById = async (req, res) => {
@@ -65,9 +67,9 @@ const updateTaskStatusById = async (req, res) => {
     user_id: req.user.id,
   };
 
-  const updatedTaskField = await this.service.updateStatus(payload);
+  const data = await this.service.updateStatus(payload);
 
-  return res.ok(updatedTaskField);
+  return res.ok(data.updatedTaskField);
 };
 
 const deleteTodoTaskById = async (req, res) => {
