@@ -24,6 +24,7 @@ const registerUser = async (req, res) => {
   return res.created("Registeration successful");
 };
 
+
 const loginUser = async (req, res) => {
   const userSchema = z.object({
     email: emailSchema,
@@ -33,20 +34,21 @@ const loginUser = async (req, res) => {
   const payload = userSchema.parse(req.body);
 
   let { data } = await this.service.login(payload);
-
-  res.cookie("jwt", data.access_token, {
+  await res.cookie("jwt", data.access_token, {
     httpOnly: true,
-    maxAge: 3 * 60 * 60 * 1000, 
+    maxAge: 3 * 60 * 60 * 1000,
   });
 
   return res.ok("Login successful");
 };
+
 
 const forgotPassword = async (req, res, next) => {
   await this.service.sendLink(req.body);
 
   return res.ok("Reset link sent successfully");
 };
+
 
 const resetPassword = async (req, res) => {
   const validatedData = resetPass.parse(req.body);

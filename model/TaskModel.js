@@ -22,7 +22,7 @@ const taskSchema = new mongoose.Schema(
     },
     due_date: {
       type: Date,
-      default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 
     },
     user_id: {
       type: Schema.Types.ObjectId,
@@ -30,10 +30,11 @@ const taskSchema = new mongoose.Schema(
     },
   },
   {
-    required: true, timestamps: true
+    required: true,
+    timestamps: true,
   }
 );
-taskSchema.index({ category: 1, status: 1 });
+// taskSchema.index({ category: 1, status: 1 });
 
 taskSchema.plugin(mongoosePaginate);
 

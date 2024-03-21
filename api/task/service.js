@@ -15,7 +15,6 @@ const {
 class Service {
   async createTask(payload, user_id) {
     const { category, content, status, due_date } = payload;
-    console.log(user_id);
     const task = new Task({
       category,
       content,
@@ -43,11 +42,68 @@ class Service {
       throw new Forbidden(
         "You do not have permission to access this task.",
         INSUFFICIENT_PERMISSIONS
-      );
+        );
+      }
+      return { task };
     }
-    return { task };
+    
+  async editTodo(payload) {
+      const {
+        task_id,
+        user_id,
+        status,
+        category,
+        content,
+        due_date,
+      } = payload;
+      if (!ObjectId.isValid(task_id)) {
+        throw new BadRequest(
+          "Invalid task_id format.",
+          INVALID_REQUEST_PARAMETERS
+        );
+      }
+      const task = await Task.findById( task_id );
+      if (!task) {
+        throw new ResourceNotFound("Resource not found.", RESOURCE_NOT_FOUND);
+      }
+      if (task.user_id.toString() !== user_id.toString()) {
+        throw new Forbidden(
+          "You do not have permission to access this task.",
+          INSUFFICIENT_PERMISSIONS
+        );
+      }
+      const data = await Task.findByIdAndUpdate(
+        task_id,
+        {
+          user_id,
+          status: status || task.status,
+          category: category || task.category,
+          content: content || task.content,
+          due_date: due_date || task.due_date,
+        },
+        {
+          new: true,
+        }
+      );
+      return { data };
+    }
+  
+  async deleteTask(payload) {
+      const { task_id, user_id } = payload;
+      if (!ObjectId.isValid(task_id)) {
+        throw new BadRequest(
+          "Invalid user_id format.",
+          INVALID_REQUEST_PARAMETERS
+        );
+      }
+      const task = await Task.findOneAndDelete({
+        _id: task_id,
+        user_id,
+      });
+      if (!task)
+        throw new ResourceNotFound("Resource not found.", RESOURCE_NOT_FOUND);
   }
-
+  
   async updateContent(payload) {
     const { task_id, user_id, content } = payload;
 
@@ -157,22 +213,6 @@ class Service {
       throw new ResourceNotFound("Task not found.", RESOURCE_NOT_FOUND);
     }
     return { updatedTaskField };
-  }
-
-  async deleteTask(payload) {
-    const { task_id, user_id } = payload;
-    if (!ObjectId.isValid(task_id)) {
-      throw new BadRequest(
-        "Invalid user_id format.",
-        INVALID_REQUEST_PARAMETERS
-      );
-    }
-    const task = await Task.findOneAndDelete({
-      _id: task_id,
-      user_id,
-    });
-    if (!task)
-      throw new ResourceNotFound("Resource not found.", RESOURCE_NOT_FOUND);
   }
 }
 
