@@ -2,7 +2,6 @@ require("express-async-errors");
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const helmet = require("helmet");
 
@@ -16,12 +15,20 @@ const { UNKNOWN_ENDPOINT } = require("./utils/httpErrorCodes");
 app.use(cookieParser());
 app.use(responseUtilities);
 app.use(express.json());
-// app.use(bodyParser.json());
+
 app.use(helmet());
 app.use(morgan("dev"));
 
 require("dotenv").config();
 const connectDB = require("./service/database");
+const clientUrl = process.env.clientUrl;
+const corsOptions = {
+  origin: clientUrl,
+  credentials: true,
+  withCredentials: true,
+};
+
+app.use(cors(corsOptions));
 
 const corsOptions = {
   origin: "http://localhost:5173",
@@ -72,7 +79,7 @@ const PORT = process.env.PORT || 3001;
 
 const start = async () => {
   try {
-    await connectDB(process.env.MONGOURI || "");
+    await connectDB(process.env.MONGODB_URl || "");
     app.listen(PORT, () => console.log(`app is listening on port ${PORT}...`));
   } catch (error) {
     console.log(error);
