@@ -17,21 +17,13 @@ app.use(responseUtilities);
 app.use(express.json());
 
 app.use(helmet());
-app.use(morgan("dev"));
+app.use(morgan("combined"));
 
 require("dotenv").config();
 const connectDB = require("./service/database");
 const clientUrl = process.env.clientUrl;
 const corsOptions = {
   origin: clientUrl,
-  credentials: true,
-  withCredentials: true,
-};
-
-app.use(cors(corsOptions));
-
-const corsOptions = {
-  origin: "http://localhost:5173",
   credentials: true,
   withCredentials: true,
 };
