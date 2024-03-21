@@ -11,12 +11,15 @@ router.get("/:task_id", userAuth, Ctrl.getTodoTaskById);
 
 router.get("/", userAuth, paginatedResults(Task), Ctrl.getAllTodoTask);
 
+router.put("/:task_id/edit", userAuth, Ctrl.editTodoTask);
+
+router.delete("/:task_id/delete", userAuth, Ctrl.deleteTodoTaskById);
+
 router.patch("/:task_id/edit_content", userAuth, Ctrl.updateTaskContentById);
 
 router.patch("/:task_id/edit_category", userAuth, Ctrl.updateTaskCategoryById);
 
 router.patch("/:task_id/edit_status", userAuth, Ctrl.updateTaskStatusById);
 
-router.delete("/:task_id/delete", userAuth, Ctrl.deleteTodoTaskById);
 
 module.exports = router;

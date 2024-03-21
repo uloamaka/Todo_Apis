@@ -13,16 +13,23 @@ const responseUtilities = require("./shared/responceMiddlewares");
 const { errorLogger, errorHandler } = require("./shared/errorMiddlewares");
 const { UNKNOWN_ENDPOINT } = require("./utils/httpErrorCodes");
 
+app.use(cookieParser());
 app.use(responseUtilities);
 app.use(express.json());
-app.use(bodyParser.json());
-app.use(cors());
+// app.use(bodyParser.json());
 app.use(helmet());
 app.use(morgan("dev"));
-app.use(cookieParser());
 
 require("dotenv").config();
 const connectDB = require("./service/database");
+
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+  withCredentials: true,
+};
+
+app.use(cors(corsOptions));
 
 const v1Router = require("./routes/index");
 app.use("/api/v1", v1Router);

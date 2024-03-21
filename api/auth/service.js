@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
-const jwt = require("../../service/jwt");
+const JWT = require("../../service/jwt");
+const jwt = require("jsonwebtoken")
 const JWT_SECRET = process.env.jwtSecret;
 const clientUrl = process.env.clientUrl; // to connect to frontend
 const User = require("../../model/userModel");
@@ -33,7 +34,7 @@ class Service {
       password: hash,
     });
 
-    const data = await jwt.generateToken(user.id);
+    const data = await JWT.generateToken(user.id);
     return { data };
   }
 
@@ -51,7 +52,7 @@ class Service {
 
     if (!match) throw new BadRequest("Error comparing passwords");
 
-    const data = await jwt.generateToken(user.id);
+    const data = await JWT.generateToken(user.id);
     return { data };
   }
 
@@ -85,7 +86,7 @@ class Service {
 
     const otpToken = JWT_SECRET + user.password;
     try {
-      decodedToken = jwt.verify(resetToken, otpToken);
+      decodedToken = JWT.verify(resetToken, otpToken);
     } catch (err) {
       throw new Unauthorized(err.message, MALFORMED_TOKEN);
     }
