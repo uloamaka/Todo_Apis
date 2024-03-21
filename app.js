@@ -15,6 +15,7 @@ const { UNKNOWN_ENDPOINT } = require("./utils/httpErrorCodes");
 app.use(cookieParser());
 app.use(responseUtilities);
 app.use(express.json());
+
 app.use(helmet());
 app.use(morgan("dev"));
 
@@ -23,6 +24,14 @@ const connectDB = require("./service/database");
 const clientUrl = process.env.clientUrl;
 const corsOptions = {
   origin: clientUrl,
+  credentials: true,
+  withCredentials: true,
+};
+
+app.use(cors(corsOptions));
+
+const corsOptions = {
+  origin: "http://localhost:5173",
   credentials: true,
   withCredentials: true,
 };
