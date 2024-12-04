@@ -7,6 +7,10 @@ const paginatedResults = require("../middlewares/pagination.middleware");
 
 router.post("/create", userAuth, Ctrl.createTodoTask);
 
+router.get('/today_task', userAuth, paginatedResults(Task), Ctrl.getTodayTask);
+
+router.get('/category', userAuth, paginatedResults(Task), Ctrl.getTaskBycat);
+
 router.get("/:task_id", userAuth, Ctrl.getTodoTaskById);
 
 router.get("/", userAuth, paginatedResults(Task), Ctrl.getAllTodoTask);

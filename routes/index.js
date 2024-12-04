@@ -13,6 +13,6 @@ router.get("/", (req, res) => {
 
 router.use("/auth", authRouter);
 router.use("/todo", taskRouter);
-router.use("/", swaggerRouter);
+router.use("/docs", swaggerRouter);
 
 module.exports = router;

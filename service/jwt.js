@@ -5,7 +5,7 @@ class JWTService {
   async generateToken(id) {
     const access_token = jwt.sign({ id }, JWT_SECRET, {
       algorithm: "HS256",
-      expiresIn: "1h",
+      expiresIn: "6h",
       audience: "API",
       issuer: "SMS",
     });

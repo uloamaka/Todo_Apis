@@ -93,7 +93,6 @@ class Service {
 
     const currentTime = Math.floor(Date.now() / 1000);
 
-    //check if the token is still valid
     if (!decodedToken || (decodedToken.exp && decodedToken.exp < currentTime)) {
       throw new Unauthorized("Reset token is expired", EXPIRED_TOKEN);
     }
@@ -110,7 +109,7 @@ class Service {
 
     await sendMail({
       to: user.email,
-      subject: "Password Reset Link",
+      subject: "Password Reset Successful",
       html: confirmReset(),
     });
   }

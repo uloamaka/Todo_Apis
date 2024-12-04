@@ -6,6 +6,8 @@ router.post("/register", registerUser.registerUser);
 
 router.post("/login", registerUser.loginUser);
 
+router.post('/logout', registerUser.logoutUser);
+
 router.post("/forget-password", registerUser.forgotPassword);
 
 router.post("/reset-password/:userId/:resetToken", registerUser.resetPassword);

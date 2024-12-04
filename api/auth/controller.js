@@ -41,7 +41,14 @@ const loginUser = async (req, res) => {
 
   return res.ok("Login successful");
 };
+const logoutUser = async (req, res) => {
+    res.clearCookie('jwt', {
+        httpOnly: true,
+        path: '/'
+    });
 
+    return res.ok('Logout successful');
+};
 
 const forgotPassword = async (req, res, next) => {
   await this.service.sendLink(req.body);
@@ -61,6 +68,7 @@ const resetPassword = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser,
   forgotPassword,
   resetPassword,
 };
